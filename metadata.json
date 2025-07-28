@@ -1,5 +1,6 @@
 {
   "name": "AI Resume Generator",
   "description": "An intuitive tool for users to create, preview, and download professional resumes. It features a two-column layout, real-time updates, AI-powered content enhancement, and multiple download formats (PDF, DOCX, TXT).",
-  "requestFramePermissions": []
+  "requestFramePermissions": [],
+  "prompt": ""
 }

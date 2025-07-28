@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { Packer, Document, Paragraph, TextRun, HeadingLevel, ImageRun, BorderStyle, AlignmentType } from 'docx';
+import { Packer, Document, Paragraph, TextRun, HeadingLevel, ImageRun, AlignmentType } from 'docx';
 import saveAs from 'file-saver';
 import { ResumeData } from '../types';
 
@@ -90,7 +90,7 @@ const dataUrlToBuffer = (dataUrl: string): ArrayBuffer => {
 
 
 export const downloadDocx = async (data: ResumeData) => {
-    const sections = [
+    const sections: Paragraph[] = [
         new Paragraph({
             children: [
                 new TextRun({
@@ -99,7 +99,7 @@ export const downloadDocx = async (data: ResumeData) => {
                     size: 48,
                 }),
             ],
-            heading: HeadingLevel.TITLE,
+            style: 'Title',
             alignment: AlignmentType.CENTER,
         }),
         new Paragraph({
@@ -110,33 +110,48 @@ export const downloadDocx = async (data: ResumeData) => {
 
     if (data.profilePhoto) {
         try {
-            const buffer = dataUrlToBuffer(data.profilePhoto);
-            sections.unshift(
-                new Paragraph({
-                    children: [
-                        new ImageRun({
-                            buffer: buffer,
-                            transformation: {
-                                width: 150,
-                                height: 150,
-                            },
-                        }),
-                    ],
-                    alignment: AlignmentType.CENTER,
-                })
-            );
+            let imageBuffer: ArrayBuffer | undefined;
+            if (data.profilePhoto.startsWith('data:')) {
+                 imageBuffer = dataUrlToBuffer(data.profilePhoto);
+            } else {
+                const response = await fetch(data.profilePhoto);
+                if (response.ok) {
+                    imageBuffer = await response.arrayBuffer();
+                } else {
+                    console.error("Could not fetch profile image for DOCX");
+                }
+            }
+            
+            if (imageBuffer) {
+                 sections.unshift(
+                    new Paragraph({
+                        children: [
+                            new ImageRun({
+                                type: "buffer",
+                                data: imageBuffer,
+                                transformation: {
+                                    width: 150,
+                                    height: 150,
+                                },
+                            }),
+                        ],
+                        alignment: AlignmentType.CENTER,
+                    })
+                );
+            }
         } catch (error) {
             console.error("Could not process image for DOCX", error);
         }
     }
 
+    const createHeading = (text: string) => new Paragraph({ text, heading: HeadingLevel.HEADING_1, style: 'Heading1' });
 
     sections.push(
-        new Paragraph({ text: "Summary", heading: HeadingLevel.HEADING_1, border: { bottom: { color: "auto", space: 1, style: BorderStyle.SINGLE, size: 6 } } }),
+        createHeading("Summary"),
         new Paragraph(data.summary),
-        new Paragraph({ text: "Skills", heading: HeadingLevel.HEADING_1, border: { bottom: { color: "auto", space: 1, style: BorderStyle.SINGLE, size: 6 } } }),
+        createHeading("Skills"),
         new Paragraph(data.skills.join(', ')),
-        new Paragraph({ text: "Work Experience", heading: HeadingLevel.HEADING_1, border: { bottom: { color: "auto", space: 1, style: BorderStyle.SINGLE, size: 6 } } })
+        createHeading("Work Experience")
     );
 
     data.workExperience.forEach(exp => {
@@ -153,7 +168,7 @@ export const downloadDocx = async (data: ResumeData) => {
         );
     });
 
-    sections.push(new Paragraph({ text: "Education", heading: HeadingLevel.HEADING_1, border: { bottom: { color: "auto", space: 1, style: BorderStyle.SINGLE, size: 6 } } }));
+    sections.push(createHeading("Education"));
 
     data.education.forEach(edu => {
         sections.push(
@@ -169,7 +184,7 @@ export const downloadDocx = async (data: ResumeData) => {
     });
     
     if (data.awards.length > 0) {
-        sections.push(new Paragraph({ text: "Awards & Certifications", heading: HeadingLevel.HEADING_1, border: { bottom: { color: "auto", space: 1, style: BorderStyle.SINGLE, size: 6 } } }));
+        sections.push(createHeading("Awards & Certifications"));
         data.awards.forEach(award => {
             sections.push(
                 new Paragraph({ text: award.name, style: 'IntenseQuote' }),
@@ -180,7 +195,7 @@ export const downloadDocx = async (data: ResumeData) => {
     }
 
     sections.push(
-        new Paragraph({ text: "References", heading: HeadingLevel.HEADING_1, border: { bottom: { color: "auto", space: 1, style: BorderStyle.SINGLE, size: 6 } } }),
+        createHeading("References"),
         new Paragraph(data.references)
     );
 
