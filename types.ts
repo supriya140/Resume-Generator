@@ -1,23 +1,28 @@
 
-export interface WorkExperience {
-  id: string;
-  jobTitle: string;
+export interface Education {
+  school: string;
+  degree: string;
+  year: string;
+  details: string;
+}
+
+export interface Experience {
+  title: string;
   company: string;
   duration: string;
   responsibilities: string;
 }
 
-export interface Education {
-  id: string;
-  school: string;
-  degree: string;
-  details: string;
+export interface Award {
+  name: string;
+  year: string;
+  issuer: string;
 }
 
-export interface Award {
-    id: string;
+export interface Reference {
     name: string;
-    details: string;
+    contact: string;
+    relation: string;
 }
 
 export interface ResumeData {
@@ -26,10 +31,10 @@ export interface ResumeData {
   phone: string;
   address: string;
   summary: string;
-  profilePhoto: string | null;
-  skills: string[];
+  photo: string; // Base64 encoded string
+  skills: string; // Comma-separated
   education: Education[];
-  workExperience: WorkExperience[];
+  experience: Experience[];
   awards: Award[];
-  references: string;
+  references: Reference[];
 }

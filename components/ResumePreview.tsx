@@ -1,100 +1,128 @@
 
-import React from 'react';
-import { ResumeData } from '../types';
+import React, { forwardRef } from 'react';
+import { type ResumeData } from '../types';
+import { MailIcon, PhoneIcon, LocationIcon, AwardIcon, UserIcon, UsersIcon } from './icons/Icons';
 
 interface ResumePreviewProps {
-  resumeData: ResumeData;
+    data: ResumeData;
 }
 
-const ResumePreview: React.FC<ResumePreviewProps> = ({ resumeData }) => {
-  const { name, email, phone, address, summary, profilePhoto, skills, education, workExperience, awards, references } = resumeData;
+export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(({ data }, ref) => {
+    const skillsArray = data.skills.split(',').map(skill => skill.trim()).filter(Boolean);
 
-  const Section: React.FC<{ title: string; children: React.ReactNode; className?: string }> = ({ title, children, className }) => (
-    <div className={`mb-6 ${className}`}>
-      <h2 className="text-xl font-bold text-indigo-800 border-b-2 border-indigo-200 pb-1 mb-3">{title}</h2>
-      {children}
-    </div>
-  );
+    return (
+        <div ref={ref} className="w-full h-full bg-white text-gray-800 p-8 font-serif text-[10px] leading-snug">
+            <div className="flex flex-col h-full">
+                {/* Header */}
+                <header className="text-center border-b-2 pb-4 mb-4 border-gray-700">
+                    <h1 className="text-4xl font-bold tracking-widest text-gray-800 uppercase">{data.name || "Your Name"}</h1>
+                </header>
 
-  return (
-    <div id="resume-preview" className="bg-white p-8 shadow-lg w-full max-w-4xl mx-auto A4-ratio">
-      <div className="grid grid-cols-3 gap-8">
-        {/* Left Column */}
-        <div className="col-span-1 text-gray-700">
-          {profilePhoto && (
-            <div className="mb-6">
-              <img src={profilePhoto} alt="Profile" className="rounded-full w-40 h-40 object-cover mx-auto shadow-md" />
-            </div>
-          )}
-          <div className="mb-6 text-center">
-            <h1 className="text-3xl font-bold text-gray-800">{name}</h1>
-          </div>
-          <div className="mb-6 space-y-2">
-            <h3 className="text-lg font-semibold text-indigo-800 border-b border-indigo-100 pb-1">Contact</h3>
-            <p className="text-sm">{email}</p>
-            <p className="text-sm">{phone}</p>
-            <p className="text-sm">{address}</p>
-          </div>
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-indigo-800 border-b border-indigo-100 pb-1">Skills</h3>
-            <ul className="mt-2 space-y-1">
-              {skills.map((skill, index) => (
-                <li key={index} className="bg-indigo-50 text-indigo-800 text-sm font-medium px-2 py-1 rounded">{skill}</li>
-              ))}
-            </ul>
-          </div>
-           {references && (
-             <div className="mb-6">
-                <h3 className="text-lg font-semibold text-indigo-800 border-b border-indigo-100 pb-1">References</h3>
-                <p className="text-sm mt-2 whitespace-pre-wrap">{references}</p>
-            </div>
-           )}
-        </div>
+                {/* Main Content */}
+                <div className="flex-grow flex gap-6">
+                    {/* Left Column */}
+                    <aside className="w-1/3 pr-6 border-r border-gray-300">
+                        {data.photo && (
+                            <div className="flex justify-center mb-6">
+                                <img src={data.photo} alt="Profile" className="w-32 h-32 rounded-full object-cover border-4 border-gray-200" />
+                            </div>
+                        )}
+                        
+                        <div className="space-y-4">
+                            <div>
+                                <h3 className="text-sm font-extrabold uppercase tracking-wider mb-2 border-b border-gray-300 pb-1 text-gray-700">Contact</h3>
+                                <ul className="space-y-1 text-gray-600">
+                                    {data.email && <li className="flex items-center"><MailIcon className="w-3 h-3 mr-2 shrink-0" /><span>{data.email}</span></li>}
+                                    {data.phone && <li className="flex items-center"><PhoneIcon className="w-3 h-3 mr-2 shrink-0" /><span>{data.phone}</span></li>}
+                                    {data.address && <li className="flex items-center"><LocationIcon className="w-3 h-3 mr-2 shrink-0" /><span>{data.address}</span></li>}
+                                </ul>
+                            </div>
+                            
+                            {skillsArray.length > 0 && (
+                                <div>
+                                    <h3 className="text-sm font-extrabold uppercase tracking-wider mb-2 border-b border-gray-300 pb-1 text-gray-700">Skills</h3>
+                                    <ul className="flex flex-wrap gap-1">
+                                        {skillsArray.map((skill, index) => (
+                                            <li key={index} className="bg-gray-200 text-gray-700 rounded-md px-2 py-0.5 text-[9px]">{skill}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
 
-        {/* Right Column */}
-        <div className="col-span-2">
-          <Section title="Summary">
-            <p className="text-sm leading-relaxed">{summary}</p>
-          </Section>
+                            {data.education.length > 0 && (
+                                <div>
+                                    <h3 className="text-sm font-extrabold uppercase tracking-wider mb-2 border-b border-gray-300 pb-1 text-gray-700">Education</h3>
+                                    {data.education.map((edu, index) => (
+                                        <div key={index} className="mb-2">
+                                            <p className="font-bold text-gray-800">{edu.degree}</p>
+                                            <p className="text-gray-600">{edu.school}</p>
+                                            <p className="text-xs text-gray-500">{edu.year}</p>
+                                            {edu.details && <p className="text-xs text-gray-500 italic">{edu.details}</p>}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </aside>
 
-          <Section title="Work Experience">
-            {workExperience.map((exp) => (
-              <div key={exp.id} className="mb-4">
-                <h3 className="text-lg font-semibold">{exp.jobTitle}</h3>
-                <div className="flex justify-between items-baseline">
-                  <p className="text-md font-medium text-gray-600">{exp.company}</p>
-                  <p className="text-sm text-gray-500">{exp.duration}</p>
+                    {/* Right Column */}
+                    <main className="w-2/3">
+                        <section>
+                            <h2 className="text-lg font-extrabold uppercase tracking-wider mb-2 border-b-2 border-gray-400 pb-1 text-gray-800">Summary</h2>
+                            <p className="text-gray-600 whitespace-pre-wrap">{data.summary}</p>
+                        </section>
+
+                        {data.experience.length > 0 && (
+                            <section className="mt-6">
+                                <h2 className="text-lg font-extrabold uppercase tracking-wider mb-2 border-b-2 border-gray-400 pb-1 text-gray-800">Experience</h2>
+                                {data.experience.map((exp, index) => (
+                                    <div key={index} className="mb-4">
+                                        <h3 className="text-md font-bold text-gray-800">{exp.title}</h3>
+                                        <div className="flex justify-between text-xs text-gray-500 mb-1">
+                                            <p className="font-semibold">{exp.company}</p>
+                                            <p>{exp.duration}</p>
+                                        </div>
+                                        <ul className="list-disc list-inside text-gray-600 space-y-1 pl-1">
+                                            {exp.responsibilities.split('\n').filter(Boolean).map((resp, i) => (
+                                                <li key={i}>{resp}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                ))}
+                            </section>
+                        )}
+
+                        {data.awards.length > 0 && (
+                            <section className="mt-6">
+                                <h2 className="text-lg font-extrabold uppercase tracking-wider mb-2 border-b-2 border-gray-400 pb-1 text-gray-800">Awards</h2>
+                                {data.awards.map((award, index) => (
+                                    <div key={index} className="flex items-start mb-2">
+                                       <AwardIcon className="w-3 h-3 mr-2 mt-0.5 shrink-0 text-gray-600"/>
+                                       <div>
+                                           <p className="font-semibold text-gray-800">{award.name} <span className="text-xs text-gray-500 font-normal">({award.year})</span></p>
+                                           <p className="text-xs text-gray-500">{award.issuer}</p>
+                                       </div>
+                                    </div>
+                                ))}
+                            </section>
+                        )}
+                         {data.references.length > 0 && (
+                            <section className="mt-6">
+                                <h2 className="text-lg font-extrabold uppercase tracking-wider mb-2 border-b-2 border-gray-400 pb-1 text-gray-800">References</h2>
+                                {data.references.map((ref, index) => (
+                                    <div key={index} className="flex items-start mb-2">
+                                       <UsersIcon className="w-3 h-3 mr-2 mt-0.5 shrink-0 text-gray-600"/>
+                                       <div>
+                                           <p className="font-semibold text-gray-800">{ref.name} <span className="text-xs text-gray-500 font-normal">({ref.relation})</span></p>
+                                           <p className="text-xs text-gray-500">{ref.contact}</p>
+                                       </div>
+                                    </div>
+                                ))}
+                            </section>
+                        )}
+                    </main>
                 </div>
-                <p className="text-sm mt-1 whitespace-pre-wrap">{exp.responsibilities}</p>
-              </div>
-            ))}
-          </Section>
-
-          <Section title="Education">
-            {education.map((edu) => (
-              <div key={edu.id} className="mb-4">
-                <h3 className="text-lg font-semibold">{edu.school}</h3>
-                <p className="text-md font-medium text-gray-600">{edu.degree}</p>
-                <p className="text-sm text-gray-500">{edu.details}</p>
-              </div>
-            ))}
-          </Section>
-          
-          {awards.length > 0 && (
-             <Section title="Awards & Certifications">
-                {awards.map((award) => (
-                  <div key={award.id} className="mb-3">
-                    <h3 className="text-lg font-semibold">{award.name}</h3>
-                    <p className="text-md text-gray-600">{award.details}</p>
-                  </div>
-                ))}
-              </Section>
-          )}
-
+            </div>
         </div>
-      </div>
-    </div>
-  );
-};
-
-export default ResumePreview;
+    );
+});

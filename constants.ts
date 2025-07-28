@@ -1,44 +1,47 @@
 
-import { ResumeData } from './types';
+import { type ResumeData } from './types';
 
 export const INITIAL_RESUME_DATA: ResumeData = {
-  name: 'Amelia Chen',
-  email: 'amelia.chen@example.com',
-  phone: '555-123-4567',
-  address: 'San Francisco, CA',
-  summary: 'Dedicated and results-oriented Frontend Engineer with 5+ years of experience in building and maintaining responsive web applications using React, TypeScript, and modern JavaScript frameworks. Proven ability to collaborate with cross-functional teams to deliver high-quality software products. Passionate about creating intuitive user interfaces and optimizing performance.',
-  profilePhoto: 'https://picsum.photos/id/237/400/400',
-  skills: ['React', 'TypeScript', 'JavaScript (ES6+)', 'HTML5 & CSS3', 'Tailwind CSS', 'Node.js', 'Jest', 'Git & GitHub'],
-  education: [
+  name: 'Jane Doe',
+  email: 'jane.doe@example.com',
+  phone: '123-456-7890',
+  address: '123 Main St, Anytown, USA',
+  summary: 'A highly motivated and detail-oriented professional with a proven track record of success. Seeking to leverage my skills in a challenging new role.',
+  photo: '',
+  skills: 'React, TypeScript, Node.js, Project Management, Agile Methodologies',
+  experience: [
     {
-      id: 'edu1',
-      school: 'University of California, Berkeley',
-      degree: 'B.S. in Computer Science',
-      details: 'Graduated with Honors, 2015-2019'
+      title: 'Senior Frontend Engineer',
+      company: 'Tech Solutions Inc.',
+      duration: 'Jan 2020 - Present',
+      responsibilities: '- Led the development of a major client-facing web application using React and TypeScript.\n- Mentored junior developers and improved code quality by 30%.\n- Collaborated with UX/UI designers to create intuitive user experiences.'
     }
   ],
-  workExperience: [
+  education: [
     {
-      id: 'work1',
-      jobTitle: 'Senior Frontend Engineer',
-      company: 'Innovate Inc.',
-      duration: '2021 - Present',
-      responsibilities: 'Led the development of a new user-facing dashboard, improving user engagement by 20%. Mentored junior developers and conducted code reviews to ensure code quality and consistency.'
-    },
-    {
-      id: 'work2',
-      jobTitle: 'Frontend Developer',
-      company: 'Tech Solutions LLC',
-      duration: '2019 - 2021',
-      responsibilities: 'Developed and maintained components for a large-scale e-commerce platform. Collaborated with UI/UX designers to translate wireframes into functional, responsive web pages.'
+      school: 'University of Technology',
+      degree: 'B.S. in Computer Science',
+      year: '2016-2020',
+      details: 'Graduated with Honors, GPA: 3.8'
     }
   ],
   awards: [
-      {
-          id: 'award1',
-          name: 'Developer of the Year',
-          details: 'Innovate Inc., 2022'
-      }
+    {
+      name: 'Innovator of the Year',
+      year: '2022',
+      issuer: 'Tech Solutions Inc.'
+    }
   ],
-  references: 'Available upon request.'
+  references: [
+    {
+      name: 'John Smith',
+      relation: 'Former Manager',
+      contact: 'Available upon request'
+    }
+  ]
 };
+
+export const NEW_EXPERIENCE = { title: '', company: '', duration: '', responsibilities: '' };
+export const NEW_EDUCATION = { school: '', degree: '', year: '', details: '' };
+export const NEW_AWARD = { name: '', year: '', issuer: '' };
+export const NEW_REFERENCE = { name: '', relation: '', contact: '' };
